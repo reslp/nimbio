@@ -14,3 +14,8 @@ type
     FQSeqRecord* = ref object of SeqRecord
         phred*: string
         internal_id*: string
+
+# an array of sequence records for easier handling
+type 
+   SeqRecordArray* = seq[SeqRecord]
+   FQSeqRecordArray* = seq[FQSeqRecord]

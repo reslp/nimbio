@@ -30,9 +30,6 @@ proc toLower*(self: SeqRecord): SeqRecord =
         newseq = newseq & toLowerAscii(c)
     SeqRecord(id: self.id, seq: newseq, len: newseq.len)
 
-# an array of sequence records for easier handling
-type 
-   SeqRecordArray = seq[SeqRecord]
 
 iterator ReadFasta*(file: File): SeqRecord =
     var id = ""
