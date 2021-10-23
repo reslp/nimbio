@@ -1,1 +1,3 @@
-import ./nimbio/SeqIO
+import ./nimbio/SeqTypes
+import ./nimbio/FastaIO
+import ./nimbio/FastQIO

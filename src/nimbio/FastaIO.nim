@@ -1,14 +1,6 @@
 import strutils
+import SeqTypes
 
-# TODO: definition of the DNA and AA alphabets
-
-# definition of the Sequence type
-type
-    Seq = string
-    SeqRecord = ref object of RootObj
-        len*: int
-        id*: string
-        seq*: Seq
 proc find(seq: SeqRecord, str: string): int =
     return seq.seq.find(str)
 
