@@ -61,3 +61,6 @@ proc ReadFastQ*(file: File): FQSeqRecordArray =
              whichline = 1
              continue 
     return recs
+
+proc toString*(rec: FQSeqRecord): string =
+    return rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & rec.phred & "\n" 
