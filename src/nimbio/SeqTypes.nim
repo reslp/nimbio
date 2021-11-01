@@ -15,6 +15,9 @@ type
         phred*: string
         internal_id*: string
 
+proc `$`*(rec: SeqRecord): string =
+    return rec.id & "\n" & rec.seq
+
 # an array of sequence records for easier handling
 type 
    SeqRecordArray* = seq[SeqRecord]
