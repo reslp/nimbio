@@ -11,3 +11,14 @@ for sequence in ReadFasta(input):
      echo sequence.toLower().toString()
      echo "Reverse Complement of sequence"
      echo sequence.reverse_complement().toString()
+
+echo("Check FASTQ handling")
+let input2 = open("testdata/subset.fastq")
+var readall: FQSeqRecordArray = ReadFastQ(input2)
+check readall.len == 1000
+
+echo("Check printing of FASTQ")
+echo("Single sequence")
+echo(readall[1])
+echo("Whole array")
+echo(readall)
