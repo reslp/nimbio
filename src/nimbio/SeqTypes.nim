@@ -22,3 +22,15 @@ proc `$`*(rec: SeqRecord): string =
 type 
    SeqRecordArray* = seq[SeqRecord]
    FQSeqRecordArray* = seq[FQSeqRecord]
+
+proc `$`*(arr: SeqRecordArray): string =
+    var val = ""
+    for rec in arr:
+        val = val & rec.id & "\n" & rec.seq & "\n" 
+    return val
+
+proc `$`*(arr: FQSeqRecordArray): string =
+    var val = ""
+    for rec in arr:
+        val = val & rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & rec.phred & "\n"
+    return val
