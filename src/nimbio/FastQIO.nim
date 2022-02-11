@@ -22,14 +22,14 @@ iterator ReadFastQ*(file: File): FQSeqRecord =
              continue
         if whichline == 4:
              phred = strip(line)
-             yield FQSeqRecord(id: id, seq: seq, internal_id: internal_id, phred: phred, len: seq.len)
+             yield FQSeqRecord(id: id, seq: seq, internal_id: internal_id, phred: encode_quality(phred), len: seq.len)
              id = ""
              seq = ""
              internal_id = ""
              phred = ""
              whichline = 1
              continue 
-    yield FQSeqRecord(id: id, seq: seq, internal_id: internal_id, phred: phred, len: seq.len)
+    yield FQSeqRecord(id: id, seq: seq, internal_id: internal_id, phred: encode_quality(phred), len: seq.len)
 
 proc ReadFastQ*(file: File): FQSeqRecordArray =
     var whichline = 1
@@ -53,7 +53,7 @@ proc ReadFastQ*(file: File): FQSeqRecordArray =
              continue
         if whichline == 4:
              phred = strip(line)
-             recs.add(FQSeqRecord(id: id, seq: seq, internal_id: internal_id, phred: phred, len: seq.len))
+             recs.add(FQSeqRecord(id: id, seq: seq, internal_id: internal_id, phred: encode_quality(phred), len: seq.len))
              id = ""
              seq = ""
              internal_id = ""
@@ -62,5 +62,5 @@ proc ReadFastQ*(file: File): FQSeqRecordArray =
              continue 
     return recs
 
-proc toString*(rec: FQSeqRecord): string =
-    return rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & rec.phred & "\n" 
+proc toString*(rec: FQSeqRecord, encoding: string = "Illumina 1.9+"): string =
+    return rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, encoding) & "\n" 
