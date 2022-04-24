@@ -1,11 +1,11 @@
 import strutils
 import sequtils
+import Seq
  
 # TODO: definition of the DNA and AA alphabets
 
 # definition of the Sequence type and PhredScore type
 type
-    Seq* = string
     PhredScore* = object
         encoding*: string
         quality: seq[int]
@@ -46,11 +46,11 @@ type
         seq*: Seq
     FQSeqRecord* = ref object of SeqRecord
         phred*: PhredScore
-        internal_id*: string
+        internal_id*: string 
 
 
 proc `$`*(rec: SeqRecord): string =
-    return rec.id & "\n" & rec.seq
+    return rec.id & "\n" & rec.seq.data
 
 # an array of sequence records for easier handling
 type 
@@ -60,11 +60,11 @@ type
 proc `$`*(arr: SeqRecordArray): string =
     var val = ""
     for rec in arr:
-        val = val & rec.id & "\n" & rec.seq & "\n" 
+        val = val & rec.id & "\n" & rec.seq.data & "\n" 
     return val
 
 proc `$`*(arr: FQSeqRecordArray): string =
     var val = ""
     for rec in arr:
-        val = val & rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, rec.phred.encoding) & "\n"
+        val = val & rec.id & "\n" & rec.seq.data & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, rec.phred.encoding) & "\n"
     return val
