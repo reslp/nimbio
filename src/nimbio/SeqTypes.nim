@@ -48,7 +48,6 @@ type
         phred*: PhredScore
         internal_id*: string 
 
-
 proc `$`*(rec: SeqRecord): string =
     return rec.id & "\n" & rec.seq.data
 

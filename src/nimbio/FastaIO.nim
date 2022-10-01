@@ -2,7 +2,6 @@ import strutils
 import Seq
 import SeqTypes
 
-
 proc find(self: SeqRecord, str: string): int =
     return self.seq.data.find(str)
 
@@ -18,7 +17,7 @@ proc remove_gaps*(self: SeqRecord): SeqRecord =
 
 # output sequence as string incl. the sequence id
 proc toString*(rec: SeqRecord): string =
-    return rec.id & "\n" & rec.seq.data
+    return rec.seq.data
 
 proc toUpper*(self: SeqRecord): SeqRecord =
     var newseq =  ""
