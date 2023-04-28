@@ -1,34 +1,36 @@
 import strutils
 import sequtils
-import nimly
-import patty
+#import nimly # needed for lexer style
+#import patty # needed for lexer style
 
-variant Tokens:
-  OPENB
-  CLOSEB
-  COMMA
-  TIP(tip: string)
-  END
-
-niml Lexer[Tokens]:
-  r"\(":
-    return OPENB()
-  r"\)":
-    return CLOSEB()
-  r",":
-    return COMMA()
-  r"\w+":
-    return TIP(token.token)
-  r";":
-    return END()
+#variant Tokens:
+#  OPENB
+#  CLOSEB
+#  COMMA
+#  TIP(tip: string)
+#  END
+#
+#niml Lexer[Tokens]:
+#  r"\(":
+#    return OPENB()
+#  r"\)":
+#    return CLOSEB()
+#  r",":
+#    return COMMA()
+#  r"\w+":
+#    return TIP(token.token)
+#  r"\);":
+#    return END()
 
 type
   Phylo* = object
     newick*: string
-    edge*: seq[seq[int]] 
+    edge*: seq[seq[int]]
     tips*: seq[string]
+    nodelabel*: seq[string]
+    edgelength*: seq[string]
 
-proc readtree*(file: File): Phylo = 
+proc readtree*(file: File): Phylo =
   var line: string
   for line in file.lines:
     for ch in line:
@@ -51,6 +53,8 @@ proc readtree*(nwkstr: string): Phylo =
   var currnode = ntips + 1
   var nodecount = currnode
   var whichtip = 1
+  var nodelabels: seq[string]
+  var edgelengths: seq[string]
   var i = 0
   var j = 0
   var temp = ""
@@ -94,14 +98,35 @@ proc readtree*(nwkstr: string): Phylo =
         nodecount += 1
         currnode = nodecount
         right[j] = currnode
-      j += 1  
+      j += 1
+    elif nwkstr[i] == ':': # string is branch lengths  
+      temp = ""
+      i += 1
+      while(nwkstr[i] != ',' and nwkstr[i] != ')'):
+        temp.add(nwkstr[i])
+        i += 1
+      edgelengths.add(temp)
+    elif nwkstr[i] in "0123456789": #value is node support
+      temp = ""
+      var temp2 = ""
+      while(nwkstr[i] != ',' and nwkstr[i] != ')'):
+        if nwkstr[i] == ':': # this tree has node support AND branch lengths:
+          temp2 = temp
+          temp = ""
+          i += 1
+        temp.add(nwkstr[i])
+        i += 1
+      if temp2 != "":
+        nodelabels.add(temp2)
+      edgelengths.add(temp)
   var tree: Phylo
   tree.newick = nwkstr
   tree.edge = @[left,right]
   tree.tips = mytips
-  #echo(left)
-  #echo(right)
-  #echo(mytips)
+  if len(nodelabels) > 0: # only add node labels if they are present
+    tree.nodelabel = nodelabels
+  if len(edgelengths) == len(left) and len(edgelengths) == len(right):
+    tree.edgelength = edgelengths
   return tree
 
 proc echo*(phylo: Phylo) =
@@ -112,46 +137,73 @@ proc edges*(phylo: Phylo) =
   for i in 0 .. phylo.edge[1].len - 1 :
     echo(i+1,",  ", phylo.edge[0][i],"  ", phylo.edge[1][i])
 
-proc readtreelex*(nwkstr: string) =
-  # this is a work in progress and not working yet
-  var tree = Lexer.newWithString(nwkstr)
-  var tips = nwkstr.replace("(", "").replace(")","").replace(";")
-  var alltips = tips.split(",")
-  var ntips = alltips.len
-  echo("Number of tips: ", ntips)
-  var rootnode = ntips + 1 
-  var nintnodes = nwkstr.count(")")
-  echo("Number of internal nodes: ", nintnodes)
-  var nedges = nintnodes + ntips - 1
-  echo("Number of edges: ", nedges)
-  var left = repeat(0, nedges)
-  var right = repeat(0, nedges)
-  # setting things up:
-  var currnode = ntips + 1
-  var nodecount = currnode
-  var whichtip = 1
-  var li = 0
-  var ri = 0
-  var second = 0
-  left[0] = currnode
-  for token in tree.lexIter:
-    case token.kind: # how is this matched correctly?
-      of TokensKind.OPENB:
-        left[li] = currnode
-        li += 1
-        echo("OPENB")
-      of TokensKind.CLOSEB:
-        currnode = right[li] 
-        echo("CLOSEB")
-      of TokensKind.COMMA:
-        left[li] = currnode
-        echo("COMMA")
-      of TokensKind.TIP:
-        right[li] = whichtip
-        whichtip += 1
-        echo("TIP")
-      of TokensKind.END:
-        echo("END")
-        break
-    echo(left)
-    echo(right) 
+# currently not functional:
+#proc readtreelex*(nwkstr: string): Phylo =
+#  # this is a work in progress and not working yet
+#  var tree = Lexer.newWithString(nwkstr)
+#  var tips = nwkstr.replace("(", "").replace(")","").replace(";")
+#  var alltips = tips.split(",")
+#  var ntips = alltips.len
+#  echo("Number of tips: ", ntips)
+#  var rootnode = ntips + 1 
+#  var nintnodes = nwkstr.count(")")
+#  echo("Number of internal nodes: ", nintnodes)
+#  var nedges = nintnodes + ntips - 1
+#  echo("Number of edges: ", nedges)
+#  #var left = repeat(0, nedges)
+#  var left: seq[int] = @[0]
+#  var right: seq[int] = @[0]
+#  #var right = repeat(0, nedges)
+#  # setting things up:
+#  var lcurrnode = ntips + 1
+#  var rcurrnode = ntips + 1
+#  var nodecount = lcurrnode
+#  var whichtip = 1
+#  var second = 0
+#  #left[0] = currnode
+#  var stack: seq[string]
+#  var i = 1
+#  var last_token = TokensKind.OPENB # initialize last_token with a non existing token
+#  for token in tree.lexIter:
+#    echo("Iteration:", i)
+#    case token.kind:
+#      of TokensKind.OPENB:
+#        left.add(lcurrnode)
+#        lcurrnode += 1
+#
+#        rcurrnode += 1
+#        right.add(rcurrnode)
+#  
+#        echo("OPENB")
+#      of TokensKind.CLOSEB:
+#        lcurrnode -= 1
+#        left.add(lcurrnode)
+#        echo("CLOSEB")
+#      of TokensKind.COMMA:
+#        if last_token == TokensKind.TIP:
+#          lcurrnode -= 1
+#          echo("last was tip")
+#          left.add(lcurrnode)
+#        if last_token == TokensKind.CLOSEB:
+#          right.add(rcurrnode)
+#          rcurrnode += 1
+#          lcurrnode += 1
+#        echo("COMMA")
+#      of TokensKind.TIP:
+#        if last_token == TokensKind.OPENB:
+#          right.delete(right.len - 1)
+#          right.add(whichtip)
+#          whichtip += 1
+#        if last_token == TokensKind.COMMA:
+#          right.add(whichtip)
+#          whichtip += 1 
+#        echo("TIP")
+#      of TokensKind.END:
+#        echo("END")
+#        break
+#    echo(left)
+#    echo(right)
+#    last_token = token.kind
+#    i += 1
+#  echo(left)
+#  echo(right)
