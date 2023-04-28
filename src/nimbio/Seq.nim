@@ -1,5 +1,4 @@
 # implementation of a Seq class holding biological sequence data
-import strutils
 import hashes
 
 type
