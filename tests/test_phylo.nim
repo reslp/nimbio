@@ -64,3 +64,9 @@ echo(tree.tips)
 echo("Edge lengths: ", tree.edgelength)
 echo("Node labels: ", tree.nodelabel)
 echo()
+
+echo("Read trees from file now:")
+let f = open("tests/test_data/phylo.tre")
+for tree in readtree(f):
+  tree.edges()
+

@@ -29,30 +29,23 @@ type
     tips*: seq[string]
     nodelabel*: seq[string]
     edgelength*: seq[string]
-
-proc readtree*(file: File): Phylo =
-  var line: string
-  for line in file.lines:
-    for ch in line:
-      if ch == '(':
-        echo("node left")
-
+  MultiPhylo* = seq[Phylo]
+    
+  
 proc readtree*(nwkstr: string): Phylo =
   var tips = nwkstr.replace("(", "").replace(")","").replace(";")
   var mytips: seq[string]
   var ntips = len(tips.split(","))
-  echo("Number of tips: ", ntips)
-  var rootnode = ntips + 1 
+  #echo("Number of tips: ", ntips)
   var nintnodes = nwkstr.count(")")
-  echo("Number of internal nodes: ", nintnodes)
+  #echo("Number of internal nodes: ", nintnodes)
   var nedges = nintnodes + ntips - 1
-  echo("Number of edges: ", nedges)
+  #echo("Number of edges: ", nedges)
   var left = repeat(0, nedges)
   var right = repeat(0, nedges)
   # setting things up:
   var currnode = ntips + 1
   var nodecount = currnode
-  var whichtip = 1
   var nodelabels: seq[string]
   var edgelengths: seq[string]
   var i = 0
@@ -119,15 +112,20 @@ proc readtree*(nwkstr: string): Phylo =
       if temp2 != "":
         nodelabels.add(temp2)
       edgelengths.add(temp)
-  var tree: Phylo
-  tree.newick = nwkstr
-  tree.edge = @[left,right]
-  tree.tips = mytips
+  result.newick = nwkstr
+  result.edge = @[left,right]
+  result.tips = mytips
   if len(nodelabels) > 0: # only add node labels if they are present
-    tree.nodelabel = nodelabels
+    result.nodelabel = nodelabels
   if len(edgelengths) == len(left) and len(edgelengths) == len(right):
-    tree.edgelength = edgelengths
-  return tree
+    result.edgelength = edgelengths
+
+proc readtree*(file: File): MultiPhylo =
+  for line in file.lines:
+      if line.strip() == "":
+        continue
+      result.add(readtree(line.strip()))
+
 
 proc echo*(phylo: Phylo) =
   echo(phylo.newick)

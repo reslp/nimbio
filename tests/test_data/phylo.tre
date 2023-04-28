@@ -1,0 +1,5 @@
+((AAA,BBB),(CCC,DDD));
+(((Human,Chimp),Gorilla),Monkey);
+(((A,B,C),D),E);
+(((Human,Chimp)1,Gorilla)1,Monkey);
+(((Human:1,Chimp:1):1,Gorilla:1):1,Monkey:1);
