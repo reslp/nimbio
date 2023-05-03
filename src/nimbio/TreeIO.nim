@@ -116,7 +116,7 @@ proc readtree*(nwkstr: string): Phylo =
   result.edge = @[left,right]
   result.tips = mytips
   if len(nodelabels) > 0: # only add node labels if they are present
-    result.nodelabel = nodelabels
+    result.nodelabel = @[""] & nodelabels
   if len(edgelengths) == len(left) and len(edgelengths) == len(right):
     result.edgelength = edgelengths
 

@@ -1,7 +1,10 @@
 # implementation of a Seq class holding biological sequence data
 import hashes
 
-type
+type ## \
+## *Basic datatype for biological sequence data.* 
+##
+## This contains only a singel field named data.
   Seq* = object
     data*: string
 
@@ -10,17 +13,30 @@ type
 # proc encode
  
 proc newSeq*(s: string): Seq =
+  ## | Procedure to create new sequence from a string.    
+  ## | Examples: 
+  ## ```
+  ## var seq = "AATCGTC".newSeq()
+  ## var seq2 = newSeq("GGTTGN")
+  ## ```
+
   var sequence: Seq
   sequence.data = s
   return sequence
 
 proc echo*(self: Seq) =
+  ## | Print a representation of a Seq object on screen.
+  ## | Return value: nothing. 
   echo("Seq('",self.data,"')")
 
 proc len*(self: Seq): int =
+  ## | Returns the length of a Seq objects stored sequence.
+  ## | Return value: int.
   return self.data.len 
 
 proc ungap*(self: Seq): Seq =
+  ## | Remove gaps encoded by - in a Seq object.
+  ## | Return value: Seq
   var ungapped: Seq
   for element in self.data:
     if element != '-':
