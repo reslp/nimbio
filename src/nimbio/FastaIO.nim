@@ -36,13 +36,13 @@ iterator ReadFasta*(file: File): SeqRecord =
     var id = ""
     for line in file.lines:
         if line.startswith(">") == true:
-            id = strip(line)
+            id = strip(line).strip(chars={'>'})
             break
     var sequence = ""
     for line in file.lines:
         if line.startswith(">") == true:
              yield SeqRecord(id: id, seq: newSeq(sequence), len: sequence.len)
-             id = strip(line)
+             id = strip(line).strip(chars={'>'})
              sequence = ""
              continue
         sequence = sequence & strip(line)
@@ -55,13 +55,13 @@ proc ReadFasta*(file: File): SeqRecordArray =
     var recs: seq[SeqRecord] = @[]
     for line in file.lines:
         if line.startswith(">") == true:
-            id = strip(line)
+            id = strip(line).strip(chars={'>'})
             break
     var sequence = ""
     for line in file.lines:
         if line.startswith(">") == true:
              recs.add(SeqRecord(id: id, seq: newSeq(sequence), len: sequence.len))
-             id = strip(line)
+             id = strip(line).strip(chars={'>'})
              sequence = ""
              continue
         sequence = sequence & strip(line)
@@ -102,3 +102,8 @@ proc complement*(rec: SeqRecord): SeqRecord =
               revcomseq = revcomseq & rec.seq.data[i]
     SeqRecord(id: rec.id, seq: newSeq(revcomseq), len: revcomseq.len)
 
+proc echo*(self: SeqRecord, format="fasta") =
+  if format == "fasta":
+    echo(">" & self.id & "\n" & self.seq.data & "\n")
+  else:
+    echo("Output format not yet supported")
