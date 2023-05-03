@@ -1,4 +1,4 @@
-import ../src/nimbio.FastaIO
+import nimbio/FastaIO
 import unittest
 
 suite "Test FASTA handling":

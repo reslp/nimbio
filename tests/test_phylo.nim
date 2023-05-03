@@ -1,4 +1,4 @@
-import ../src/nimbio.TreeIO
+import nimbio/TreeIO
 
 var tree: Phylo
 
