@@ -104,6 +104,6 @@ proc complement*(rec: SeqRecord): SeqRecord =
 
 proc echo*(self: SeqRecord, format="fasta") =
   if format == "fasta":
-    echo(">" & self.id & "\n" & self.seq.data & "\n")
+    echo(">" & self.id & "\n" & self.seq.data)
   else:
     echo("Output format not yet supported")
