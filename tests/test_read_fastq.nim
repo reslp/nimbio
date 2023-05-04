@@ -1,4 +1,4 @@
-import nimbio/FastQIO
+import nimbio/FastqIO
 import unittest
 
 # this is where the file is opened
