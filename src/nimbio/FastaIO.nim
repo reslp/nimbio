@@ -107,3 +107,10 @@ proc echo*(self: SeqRecord, format="fasta") =
     echo(">" & self.id & "\n" & self.seq.data)
   else:
     echo("Output format not yet supported")
+
+proc echo*(self: SeqRecordArray, format="fasta") =
+  if format == "fasta":
+    for sequence in self:
+      echo(sequence)
+  else:
+    echo("Output format not yet supported")
