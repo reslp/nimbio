@@ -112,5 +112,19 @@ proc echo*(self: SeqRecordArray, format="fasta") =
   if format == "fasta":
     for sequence in self:
       echo(sequence)
+  elif format == "phylip-sequential":
+    echo(len(self), " ", len(self[0].seq.data)) #this takes the length of the first sequence and thus assumes equal length of all sequences. if this is not the case phylip format will be vialoted
+    for sequence in self:
+      var outstring = ""
+      if len(sequence.id) < 10:
+        outstring = sequence.id & " ".repeat(10-len(sequence.id))
+      else:
+        outstring = sequence.id[0 .. 9]
+      for part in countup(0, len(sequence.seq.data), 10):
+        if part + 10 < len(sequence.seq.data):
+          outstring = outstring & sequence.seq.data[part .. part + 9] & " "
+        else:
+          outstring = outstring & sequence.seq.data[part .. len(sequence.seq.data)-1] & " "
+      echo(outstring.strip(chars={' '}, leading=false))
   else:
     echo("Output format not yet supported")

@@ -20,4 +20,4 @@ echo("Test echo for SeqRecordArray")
 let input2 = open("tests/test_data/sequences.fasta")
 var sequences = ReadFasta(input2)
 echo(sequences)
-
+echo(sequences, format="phylip-sequential")
