@@ -44,27 +44,40 @@ proc ungap*(self: Seq): Seq =
   return ungapped
 
 proc `==`*(s1, s2: Seq): bool =
+  ## | Operator to check if the sequences contained in two Seq objects are identical.
+  ## | Returns true if sequences are identical and false if sequences are different.
   if s1.data == s2.data:
     return true
   else:
     return false
 
 proc `!=`*(s1, s2: Seq): bool =
+  ## | Operator to check if the sequences contained in two Seq objects are different.
+  ## | Returns true if sequences are different and false if sequences are identical.
+  if s1.data == s2.data:
   if s1.data != s2.data:
     return true
   else:
     return false
 
 proc `+`*(s1, s2: Seq): Seq =
+  ## | Operator to combine the sequences of two Seq objects.
+  ## | Returns a Seq object.
   newSeq(s1.data & s2.data)
 
 proc `+`*(s1: Seq, s2: string): Seq =
+  ## | Operator to add a string to a Seq object.
+  ## | Returns a Seq object.
   newSeq(s1.data & s2)
 
 proc `&`*(s1, s2: Seq): Seq =
+  ## | Nim style operator to combine the sequences of two Seq objects.
+  ## | Returns a Seq object.
   newSeq(s1.data & s2.data)
 
 proc `&`*(s1: Seq, s2: string): Seq =
+  ## | Nim style operator to add a string to a Seq object.
+  ## | Returns a Seq object.
   newSeq(s1.data & s2)
 
 proc hash*(self: Seq): Hash =
