@@ -68,5 +68,6 @@ echo()
 echo("Read trees from file now:")
 let f = open("tests/test_data/phylo.tre")
 for tree in readtree(f):
-  tree.edges()
-
+  tree.summary()
+  echo("Edgelabels", tree.edgelength)
+  echo("Nodelabels", tree.nodelabel)

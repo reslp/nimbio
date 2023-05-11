@@ -29,6 +29,7 @@ type
     tips*: seq[string]
     nodelabel*: seq[string]
     edgelength*: seq[string]
+    nnodes*: int
   MultiPhylo* = seq[Phylo]
     
   
@@ -92,33 +93,31 @@ proc readtree*(nwkstr: string): Phylo =
         currnode = nodecount
         right[j] = currnode
       j += 1
-    elif nwkstr[i] == ':': # string is branch lengths  
+    elif nwkstr[i] in "0123456789:.": #value is node label or branch length
       temp = ""
-      i += 1
       while(nwkstr[i] != ',' and nwkstr[i] != ')'):
         temp.add(nwkstr[i])
         i += 1
-      edgelengths.add(temp)
-    elif nwkstr[i] in "0123456789": #value is node support
-      temp = ""
-      var temp2 = ""
-      while(nwkstr[i] != ',' and nwkstr[i] != ')'):
-        if nwkstr[i] == ':': # this tree has node support AND branch lengths:
-          temp2 = temp
-          temp = ""
-          i += 1
-        temp.add(nwkstr[i])
-        i += 1
-      if temp2 != "":
-        nodelabels.add(temp2)
-      edgelengths.add(temp)
+      if ':' in temp:
+        if temp.split(":")[0] == "": #values will be treated as edgelengths
+          edgelengths.add(temp.split(":")[1])
+        else:
+          edgelengths.add(temp.split(":")[1])
+          nodelabels.add(temp.split(":")[0])
+    else:
+      echo("Charater not parsable:", nwkstr[i])
   result.newick = nwkstr
   result.edge = @[left,right]
   result.tips = mytips
+  result.nnodes = currnode
   if len(nodelabels) > 0: # only add node labels if they are present
     result.nodelabel = @[""] & nodelabels
-  if len(edgelengths) == len(left) and len(edgelengths) == len(right):
-    result.edgelength = edgelengths
+  if len(edgelengths) > 0: #== len(left) and len(edgelengths) == len(right):
+    result.edgelength = @[""] & edgelengths
+    #echo("Length of edgelengths:", len(edgelengths))
+    #echo("Length of nodelabels:", len(nodelabels))
+    #echo("Length of left:", len(left))
+    #echo("Length of right:", len(right))
 
 proc readtree*(file: File): MultiPhylo =
   for line in file.lines:
@@ -135,6 +134,19 @@ proc edges*(phylo: Phylo) =
   for i in 0 .. phylo.edge[1].len - 1 :
     echo(i+1,",  ", phylo.edge[0][i],"  ", phylo.edge[1][i])
 
+proc summary*(phylo: Phylo) =
+  echo("Tree Summary:")
+  echo(len(phylo.tips), " terminal Nodes (Tips)")
+  echo(phylo.nnodes, " internal Nodes")
+  if len(phylo.nodelabel) == 0:
+    echo("No nodelabels found")
+  else:
+    echo(len(phylo.nodelabel), " Nodelabels")
+  if len(phylo.edgelength) == 0:
+    echo("No branchlengths found")
+  else:
+    echo(len(phylo.edgelength), " Branchlength values")
+  echo(" ")
 # currently not functional:
 #proc readtreelex*(nwkstr: string): Phylo =
 #  # this is a work in progress and not working yet
