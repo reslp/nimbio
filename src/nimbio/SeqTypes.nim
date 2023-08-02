@@ -1,7 +1,3 @@
-import strutils
-import sequtils
-import Seq
- 
 # TODO: definition of the DNA and AA alphabets
 
 # definition of the Sequence type and PhredScore type
@@ -36,20 +32,20 @@ proc decode_quality*(quality: PhredScore, encoding: string): string =
     offset = 0  
     
   for score in quality.quality:
-    qual = qual & char(score+offset)    
+    qual = qual & char(score+offset)
   return qual
 
 type
     SeqRecord* = ref object of RootObj
         len*: int
         id*: string
-        seq*: Seq
+        seq*: string
     FQSeqRecord* = ref object of SeqRecord
         phred*: PhredScore
         internal_id*: string 
 
 proc `$`*(rec: SeqRecord): string =
-    return rec.id & "\n" & rec.seq.data
+    return rec.id & "\n" & rec.seq
 
 # an array of sequence records for easier handling
 type 
@@ -59,11 +55,11 @@ type
 proc `$`*(arr: SeqRecordArray): string =
     var val = ""
     for rec in arr:
-        val = val & rec.id & "\n" & rec.seq.data & "\n" 
+        val = val & rec.id & "\n" & rec.seq & "\n" 
     return val
 
 proc `$`*(arr: FQSeqRecordArray): string =
     var val = ""
     for rec in arr:
-        val = val & rec.id & "\n" & rec.seq.data & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, rec.phred.encoding) & "\n"
+        val = val & rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, rec.phred.encoding) & "\n"
     return val

@@ -1,5 +1,4 @@
 import strutils
-import Seq
 import SeqTypes
 
 iterator ReadFastQ*(file: File): FQSeqRecord =
@@ -25,7 +24,7 @@ iterator ReadFastQ*(file: File): FQSeqRecord =
               continue
         if whichline == 4:
               phred = strip(line)
-              yield FQSeqRecord(id: id, seq: newSeq(seq_raw), internal_id: internal_id, phred: encode_quality(phred), len: seq_raw.len)
+              yield FQSeqRecord(id: id, seq: seq_raw, internal_id: internal_id, phred: encode_quality(phred), len: seq_raw.len)
               id = ""
               seq_raw = ""
               internal_id = ""
@@ -57,7 +56,7 @@ proc ReadFastQ*(file: File): FQSeqRecordArray =
               continue
         if whichline == 4:
               phred = strip(line)
-              recs.add(FQSeqRecord(id: id, seq: newSeq(seq_raw), internal_id: internal_id, phred: encode_quality(phred), len: seq_raw.len))
+              recs.add(FQSeqRecord(id: id, seq: seq_raw, internal_id: internal_id, phred: encode_quality(phred), len: seq_raw.len))
               id = ""
               seq_raw = ""
               internal_id = ""
@@ -67,4 +66,4 @@ proc ReadFastQ*(file: File): FQSeqRecordArray =
     return recs
 
 proc toString*(rec: FQSeqRecord, encoding: string = "Illumina 1.9+"): string =
-    return rec.id & "\n" & rec.seq.data & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, encoding) & "\n" 
+    return rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, encoding) & "\n" 

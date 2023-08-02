@@ -6,7 +6,7 @@ type ## \
 ##
 ## This contains only a singel field named data.
   Seq* = object
-    data*: string
+    seq*: string
 
 # proc hash
 # proc tomutable
@@ -19,34 +19,33 @@ proc newSeq*(s: string): Seq =
   ## var seq = "AATCGTC".newSeq()
   ## var seq2 = newSeq("GGTTGN")
   ## ```
-
   var sequence: Seq
-  sequence.data = s
+  sequence.seq = s
   return sequence
 
 proc echo*(self: Seq) =
   ## | Print a representation of a Seq object on screen.
   ## | Return value: nothing. 
-  echo("Seq('",self.data,"')")
+  echo("Seq('",self.seq,"')")
 
 proc len*(self: Seq): int =
   ## | Returns the length of a Seq objects stored sequence.
   ## | Return value: int.
-  return self.data.len 
+  return self.seq.len 
 
 proc ungap*(self: Seq): Seq =
   ## | Remove gaps encoded by - in a Seq object.
   ## | Return value: Seq
   var ungapped: Seq
-  for element in self.data:
+  for element in self.seq:
     if element != '-':
-      ungapped.data = ungapped.data & element
+      ungapped.seq = ungapped.seq & element
   return ungapped
 
 proc `==`*(s1, s2: Seq): bool =
   ## | Operator to check if the sequences contained in two Seq objects are identical.
   ## | Returns true if sequences are identical and false if sequences are different.
-  if s1.data == s2.data:
+  if s1.seq == s2.seq:
     return true
   else:
     return false
@@ -54,8 +53,7 @@ proc `==`*(s1, s2: Seq): bool =
 proc `!=`*(s1, s2: Seq): bool =
   ## | Operator to check if the sequences contained in two Seq objects are different.
   ## | Returns true if sequences are different and false if sequences are identical.
-  if s1.data == s2.data:
-  if s1.data != s2.data:
+  if s1.seq != s2.seq:
     return true
   else:
     return false
@@ -63,22 +61,22 @@ proc `!=`*(s1, s2: Seq): bool =
 proc `+`*(s1, s2: Seq): Seq =
   ## | Operator to combine the sequences of two Seq objects.
   ## | Returns a Seq object.
-  newSeq(s1.data & s2.data)
+  newSeq(s1.seq & s2.seq)
 
 proc `+`*(s1: Seq, s2: string): Seq =
   ## | Operator to add a string to a Seq object.
   ## | Returns a Seq object.
-  newSeq(s1.data & s2)
+  newSeq(s1.seq & s2)
 
 proc `&`*(s1, s2: Seq): Seq =
   ## | Nim style operator to combine the sequences of two Seq objects.
   ## | Returns a Seq object.
-  newSeq(s1.data & s2.data)
+  newSeq(s1.seq & s2.seq)
 
 proc `&`*(s1: Seq, s2: string): Seq =
   ## | Nim style operator to add a string to a Seq object.
   ## | Returns a Seq object.
-  newSeq(s1.data & s2)
+  newSeq(s1.seq & s2)
 
 proc hash*(self: Seq): Hash =
-  hash(self.data)
+  hash(self.seq)
