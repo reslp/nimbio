@@ -4,5 +4,6 @@ import nimbio/FastaIO
 import nimbio/FastqIO
 import nimbio/Kmer
 import nimbio/TreeIO
+import nimbio/Align
 
-export SeqTypes, FastaIO, FastqIO, Kmer, TreeIO
+export SeqTypes, FastaIO, FastqIO, Kmer, TreeIO, Align
