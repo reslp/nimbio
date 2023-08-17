@@ -44,3 +44,6 @@ proc format*(self: MultipleSeqAlignment, to: string): string =
   else:
     raise newException(UnkownAlignmentFormatException, "Alignment format " & to & " not recognized.")
   result 
+
+proc `[]`(a: MultipleSeqAlignment, r: HSlice[int, int]): MultipleSeqAlignment =
+  return a

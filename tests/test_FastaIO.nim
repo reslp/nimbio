@@ -1,4 +1,5 @@
 import nimbio/FastaIO
+import nimbio/SeqTypes
 import unittest
 
 suite "Test FASTA handling":
