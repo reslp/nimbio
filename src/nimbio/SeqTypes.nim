@@ -44,6 +44,13 @@ type
         phred*: PhredScore
         internal_id*: string 
 
+proc newSeqRecord*(sequence: string, id: string): SeqRecord =
+    var record: SeqRecord
+    record.len = sequence.len
+    record.id = id
+    record.seq = sequence
+    return record
+
 proc `$`*(rec: SeqRecord): string =
     return rec.id & "\n" & rec.seq
 
