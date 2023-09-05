@@ -67,3 +67,10 @@ proc ReadFastQ*(file: File): FQSeqRecordArray =
 
 proc toString*(rec: FQSeqRecord, encoding: string = "Illumina 1.9+"): string =
     return rec.id & "\n" & rec.seq & "\n" & rec.internal_id & "\n" & decode_quality(rec.phred, encoding) & "\n" 
+
+proc toSeqRecord*(rec: FQSeqRecord): SeqRecord =
+    return newSeqRecord(sequence = rec.seq, id = rec.id)
+
+proc format*(this: FQSeqRecord, to: string): string =
+    if to.toLowerAscii() == "fasta":
+        return "needs to be implemented!"

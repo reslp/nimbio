@@ -12,3 +12,4 @@ suite "Test handling of FASTQ files":
     echo(sequence.toString("Illumina 1.5"))
     echo("Read with Solexa quality encoding:")
     echo(sequence.toString("Solexaa"))
+    echo(sequence.format("fasta"))
