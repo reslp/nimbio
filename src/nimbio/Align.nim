@@ -40,8 +40,8 @@ proc echo*(self: MultipleSeqAlignment) =
     if sequence.len <= 9:
       echo(sequence.seq[0..sequence.len-1])
     elif sequence.len <= 19:
-      echo(sequence.seq[0..9] & " " & sequence.seq[10..19])
-    elif sequence.len >= 29:
+      echo(sequence.seq[0..9] & " " & sequence.seq[10..sequence.len-1])
+    elif sequence.len <= 29:
       echo(sequence.seq[0..9] & " " & sequence.seq[10..19] & " " & sequence.seq[20..29] & "   " & sequence.id)
 
 proc format*(self: MultipleSeqAlignment, to: string): string =
@@ -67,5 +67,11 @@ proc format*(self: MultipleSeqAlignment, to: string): string =
     raise newException(UnkownAlignmentFormatException, "Alignment format " & to & " not recognized.")
   result 
 
-#proc `[]`(a: MultipleSeqAlignment, r: HSlice[int, int]): MultipleSeqAlignment =
-#  return a
+proc `[]`*[T, U: Ordinal](a: MultipleSeqAlignment, i: HSlice[T, U]): MultipleSeqAlignment =
+  var newrecords: seq[SeqRecord] = @[]
+  for record in a.records:
+    echo(record.seq[i.a .. i.b])
+    newrecords.add(SeqRecord(id: record.id, seq: record.seq[i.a .. i.b], len: record.seq[i.a .. i.b].len))
+  return MultipleSeqAlignment(len: a.len, records: newrecords)
+
+    
