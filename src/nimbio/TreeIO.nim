@@ -1,5 +1,4 @@
 import strutils
-#import sequtils
 import re
 import math
 
@@ -90,6 +89,13 @@ template GO_DOWN() =
   curnode = e[l]
 
 proc readtree*(nwkstr: string): Phylo =
+  ## | Read NEWICK tree strings.
+  ## | Examples:
+  ## ```
+  ## var tree = readtree("((A,B),(C,D))"
+  ## ```
+  ##
+
   # This proc and the templates above are basically a Nim reimplementation of the tree parsing functionality in the R package ape: https://github.com/emmanuelparadis/ape
   # This is to allow compatibility with how ape (which is the defacto standard for tree parsing in R) reads phylogenetic tree data.
   # However it is not 100% compatible due to how ape rounds numbers.
@@ -198,16 +204,25 @@ proc readtree*(nwkstr: string): Phylo =
 
 
 proc readtree*(file: File): MultiPhylo =
+  ## | Read NEWICK tree strings from a file.
+  ## | Returns a MultiPhylo object.
+  ## | Examples:
+  ## ```
+  ## var tree = readtree("phyl.tree")
+  ## ```
+  ##
   for line in file.lines:
       if line.strip() == "":
         continue
       result.add(readtree(line.strip()))
 
 proc echo*(phylo: Phylo) =
+  ## | Output NEWICK string from phylo object:
   echo(phylo.newick)
 
 proc ape_edges*(phylo: Phylo) =
-  # display Phylo.edge in the same way as in R -> tree.edge
+  ## | Display `phylo.edge` in the same way as `tree.edge` in R (using ape) is displayed.
+
   #doAssert floorMod(phylo.edge.len, 2) == 0
   if phylo.edge.len mod 2 == 0:
     echo("   1,  2,")
@@ -217,6 +232,18 @@ proc ape_edges*(phylo: Phylo) =
     echo("phylo.edge seems to be wrongly formated. Please check")
 
 proc summary*(phylo: Phylo) =
+  ## | Output short summary of phylo object
+  ## | Example:
+  ## ```
+  ## tree = readtree("((AAA,BBB),(CCC,DDD));")
+  ## tree.summary()
+  ## Tree Summary:
+  ## 4 terminal Nodes (Tips)
+  ## 3 internal Nodes
+  ## 3 Nodelabels
+  ## 6 Branchlength values
+  ## ```
+
   echo("Tree Summary:")
   echo(len(phylo.tip_label), " terminal Nodes (Tips)")
   echo(phylo.Nnode, " internal Nodes")

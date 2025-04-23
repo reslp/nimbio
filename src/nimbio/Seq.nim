@@ -1,10 +1,9 @@
-# implementation of a Seq class holding biological sequence data
+## Implementation of a Seq class holding biological sequence data
 import hashes
 
 type ## \
-## *Basic datatype for biological sequence data.* 
-##
-## This contains only a singel field named data.
+## | *Basic datatype for biological sequence data.* 
+## | This contains only a single field named `seq`.
   Seq* = object
     seq*: string
 
